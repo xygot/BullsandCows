@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define NUM_DIGITS 4
+
+// Generate random 4 digit number 
+int generateSecretNum() {
+  int digit1 = rand() % 10;
+  int digit2 = rand() % 10;
+  int digit3 = rand() % 10;
+  int digit4 = rand() % 10;
+
+  return digit1*1000 + digit2*100 + digit3*10 + digit4;
+}
+
+// Check if a digit is in a number
+int containsDigit(int number, int digit) {
+  int num = number;
+  while(num > 0) {
+    if(num % 10 == digit) {
+      return 1;
+    }
+    num /= 10;
+  }
+  return 0;
+}
+
+int main() {
+
+  srand(time(0));
+
+  int secretNum = generateSecretNum();
+
+  int guess;
+  int bulls, cows;
+
+  do {
+    // Get player's guess
+    printf("Enter your %d digit guess: ", NUM_DIGITS);
+    scanf("%d", &guess);
+    
+    // Extract guess digits
+    int g1 = guess / 1000;
+    int g2 = (guess / 100) % 10; 
+    int g3 = (guess / 10) % 10;
+    int g4 = guess % 10;
+
+    // Check bulls 
+    bulls = 0;
+    if(g1 == (secretNum / 1000)) bulls++;
+    if(g2 == (secretNum / 100) % 10) bulls++;
+    if(g3 == (secretNum / 10) % 10) bulls++;
+    if(g4 == secretNum % 10) bulls++;
+
+    // Check cows
+    cows = 0;
+    if(containsDigit(secretNum, g1)) cows++;
+    if(containsDigit(secretNum, g2)) cows++; 
+    if(containsDigit(secretNum, g3)) cows++;
+    if(containsDigit(secretNum, g4)) cows++;
+
+    printf("Bulls: %d, Cows: %d\n", bulls, cows);
+
+  } while(bulls < NUM_DIGITS);
+  
+  printf("You guessed the number!");
+
+  return 0;
+}
